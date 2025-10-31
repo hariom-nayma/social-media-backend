@@ -84,7 +84,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
             var username = jwtUtil.getUsername(token);
             logger.info("Username '{}' extracted from token. Setting principal.", username);
             // set Principal name as username string per handshake
-            attributes.put("principal", new StompPrincipal(username));
+            attributes.put("simpUser", new StompPrincipal(username));
             logger.info("Handshake successful.");
             return true;
         } catch (Exception ex) {

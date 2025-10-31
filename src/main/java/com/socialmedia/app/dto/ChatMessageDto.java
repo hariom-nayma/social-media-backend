@@ -1,16 +1,13 @@
 package com.socialmedia.app.dto;
 
+import lombok.*;
 import java.time.Instant;
 
-import lombok.Data;
-
-@Data
+ @Data @AllArgsConstructor @NoArgsConstructor
 public class ChatMessageDto {
-    private String text;
-    private String mediaUrl;
-    private Instant createdAt;
-    private boolean seen;
-    private String fromUserId;
-    private String toUserId;
-	
+    private String conversationId;
+    private String senderId;
+    private String recipientId;
+    private String content;
+    private Instant timestamp = Instant.now();
 }

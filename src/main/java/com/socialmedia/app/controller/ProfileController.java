@@ -35,4 +35,11 @@ public class ProfileController {
         String viewerId = user.getUsername();
         return ResponseEntity.ok(ApiResponse.success("Profile fetched Successfully", profileService.getUserProfileWithPostsByUsername(username, viewerId), 200));
     }
+    
+    @GetMapping("/conversation/{conversationId}")
+    public ResponseEntity<ApiResponse<?>> getUserProfileWithPostsByConversationId(@PathVariable String conversationId,
+																				   @AuthenticationPrincipal UserDetails user) {
+		String viewerId = user.getUsername();
+		return ResponseEntity.ok(ApiResponse.success("Profile fetched Successfully", profileService.getUserProfileWithPostsByConversationId(conversationId, viewerId), 200));
+	}
 }

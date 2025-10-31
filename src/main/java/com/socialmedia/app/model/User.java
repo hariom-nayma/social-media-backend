@@ -39,20 +39,21 @@ public class User extends AuditBase {
     private String profileImageUrl;
     private boolean isPrivate = false;
     private boolean verified = false;
+    private boolean isOnline = false;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<UserRole> roles = new HashSet<>(Collections.singleton(UserRole.USER));
 
     // Follow system
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_followers",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "follower_id"))
     @JsonIgnore
     private Set<User> followers = new HashSet<>();
 
-    @ManyToMany(mappedBy = "followers")
+    @ManyToMany(mappedBy = "followers", fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<User> following = new HashSet<>();
 }

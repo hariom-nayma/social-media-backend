@@ -7,8 +7,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.socialmedia.app.dto.FeedPostResponseDTO;
+import com.socialmedia.app.dto.UserProfileDTO;
 import com.socialmedia.app.dto.UserProfileWithPostsDTO;
+import com.socialmedia.app.model.Conversation;
 import com.socialmedia.app.model.User;
+import com.socialmedia.app.repository.ConversationRepository;
 import com.socialmedia.app.repository.FollowRequestRepository;
 import com.socialmedia.app.repository.UserRepository;
 import com.socialmedia.app.service.PostService;
@@ -24,13 +27,15 @@ public class ProfileServiceImpl implements com.socialmedia.app.service.ProfileSe
     private final PostService postService;
     private final ModelMapper mapper;
     private final FollowRequestRepository followRequestRepository;
+    private final ConversationRepository conversationRepository;
 
-    public ProfileServiceImpl(UserRepository userRepository, UserService userService, PostService postService, ModelMapper mapper, FollowRequestRepository followRequestRepository) {
+    public ProfileServiceImpl(UserRepository userRepository, UserService userService, PostService postService, ModelMapper mapper, FollowRequestRepository followRequestRepository, ConversationRepository conversationRepository) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.postService = postService;
         this.mapper = mapper;
         this.followRequestRepository = followRequestRepository;
+        this.conversationRepository = conversationRepository;
     }
 
     @Override
@@ -67,4 +72,20 @@ public class ProfileServiceImpl implements com.socialmedia.app.service.ProfileSe
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         return getUserProfileWithPosts(username, viewerUsername);
     }
+
+	@Override
+	public UserProfileWithPostsDTO getUserProfileWithPostsByConversationId(String conversationId, String viewerId) {
+		User viewer = userRepository.findByUsername(viewerId)
+				.orElseThrow(() -> new EntityNotFoundException("Viewer not found"));
+		
+		Conversation conversation = conversationRepository.findById(conversationId)
+				.orElseThrow(() -> new EntityNotFoundException("Conversation not found"));
+		
+		User target = conversation.getUser2().equals(viewer) ? conversation.getUser1() : conversation.getUser2();
+		return getUserProfileWithPosts(target.getUsername(), viewerId);
+		
+		
+	}
+    
+    
 }
